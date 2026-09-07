@@ -39,8 +39,11 @@ class _ContactPageState extends State<ContactPage> {
   // Controller untuk Nomor Handphone
   final TextEditingController nomorController = TextEditingController();
 
+  // Controller untuk Kategori
+  final TextEditingController kategoriController = TextEditingController();
+
   // List untuk menyimpan data kontak
-  List<Map<String, String>> contacts = [];
+  List<Map<String, String?>> contacts = [];
 
   // Fungsi untuk menyimpan kontak
   void simpanKontak() {
@@ -60,12 +63,16 @@ class _ContactPageState extends State<ContactPage> {
         'nama': namaController.text,
         'email': emailController.text,
         'nomor': nomorController.text,
+        'kategori': kategoriController.text.isEmpty
+            ? null
+            : kategoriController.text,
       });
 
       // Mengosongkan form setelah data disimpan
       namaController.clear();
       emailController.clear();
       nomorController.clear();
+      kategoriController.clear();
     });
 
     ScaffoldMessenger.of(context).showSnackBar(
@@ -327,6 +334,35 @@ class _ContactPageState extends State<ContactPage> {
                             ),
                           ),
 
+                          const SizedBox(height: 16),
+
+                          // KATEGORI
+                          const Text(
+                            'Kategori',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              color: Color(0xFF34324A),
+                            ),
+                          ),
+
+                          const SizedBox(height: 8),
+
+                          TextField(
+                            controller: kategoriController,
+                            decoration: InputDecoration(
+                              hintText: 'Contoh: Keluarga, Teman, Kerja',
+                              prefixIcon: const Icon(
+                                Icons.category_outlined,
+                              ),
+                              filled: true,
+                              fillColor: const Color(0xFFF8F8FC),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(14),
+                                borderSide: BorderSide.none,
+                              ),
+                            ),
+                          ),
+
                           const SizedBox(height: 20),
 
                           // TOMBOL SIMPAN
@@ -495,7 +531,7 @@ class _ContactPageState extends State<ContactPage> {
                             child: ListTile(
                               contentPadding: EdgeInsets.zero,
 
-                              // ICON / AVATAR
+                              // CIRCLE AVATAR
                               leading: CircleAvatar(
                                 radius: 26,
                                 backgroundColor:
@@ -529,6 +565,7 @@ class _ContactPageState extends State<ContactPage> {
                                   crossAxisAlignment:
                                       CrossAxisAlignment.start,
                                   children: [
+                                    // EMAIL
                                     Row(
                                       children: [
                                         const Icon(
@@ -549,6 +586,7 @@ class _ContactPageState extends State<ContactPage> {
 
                                     const SizedBox(height: 4),
 
+                                    // NOMOR
                                     Row(
                                       children: [
                                         const Icon(
@@ -559,6 +597,24 @@ class _ContactPageState extends State<ContactPage> {
                                         const SizedBox(width: 6),
                                         Text(
                                           contact['nomor']!,
+                                        ),
+                                      ],
+                                    ),
+
+                                    const SizedBox(height: 4),
+
+                                    // KATEGORI
+                                    Row(
+                                      children: [
+                                        const Icon(
+                                          Icons.category_outlined,
+                                          size: 15,
+                                          color: Color(0xFF6C4DE8),
+                                        ),
+                                        const SizedBox(width: 6),
+                                        Text(
+                                          contact['kategori'] ??
+                                              'Tanpa kategori',
                                         ),
                                       ],
                                     ),
