@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -42,8 +43,22 @@ class _ContactPageState extends State<ContactPage> {
   // Controller untuk Kategori
   final TextEditingController kategoriController = TextEditingController();
 
+  // Controller untuk pencarian
+  final StreamController<String> _searchController =
+      StreamController<String>();
+
   // List untuk menyimpan data kontak
   List<Map<String, String?>> contacts = [];
+
+  @override
+  void dispose() {
+    namaController.dispose();
+    emailController.dispose();
+    nomorController.dispose();
+    kategoriController.dispose();
+    _searchController.close();
+    super.dispose();
+  }
 
   // Fungsi untuk menyimpan kontak
   void simpanKontak() {
@@ -52,7 +67,6 @@ class _ContactPageState extends State<ContactPage> {
     final nomor = nomorController.text.trim();
     final kategori = kategoriController.text.trim();
 
-    // Validasi nama
     if (nama.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -62,7 +76,6 @@ class _ContactPageState extends State<ContactPage> {
       return;
     }
 
-    // Validasi email
     final emailValid = RegExp(
       r'^[^@\s]+@[^@\s]+\.[^@\s]+$',
     ).hasMatch(email);
@@ -76,7 +89,6 @@ class _ContactPageState extends State<ContactPage> {
       return;
     }
 
-    // Validasi nomor handphone
     final nomorValid = RegExp(r'^[0-9]+$').hasMatch(nomor);
 
     if (nomor.isEmpty || !nomorValid || nomor.length < 10) {
@@ -96,7 +108,6 @@ class _ContactPageState extends State<ContactPage> {
         'kategori': kategori.isEmpty ? null : kategori,
       });
 
-      // Mengosongkan form setelah data disimpan
       namaController.clear();
       emailController.clear();
       nomorController.clear();
@@ -497,167 +508,219 @@ class _ContactPageState extends State<ContactPage> {
                     const SizedBox(height: 14),
 
                     // =========================
+                    // PENCARIAN KONTAK
+                    // =========================
+                    TextField(
+                      onChanged: (teks) {
+                        _searchController.add(teks);
+                      },
+                      decoration: InputDecoration(
+                        hintText: 'Cari nama atau kategori...',
+                        prefixIcon: const Icon(
+                          Icons.search_rounded,
+                          color: Color(0xFF6C4DE8),
+                        ),
+                        filled: true,
+                        fillColor: Colors.white,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(14),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(height: 14),
+
+                    // =========================
                     // LIST KONTAK
                     // =========================
-                    if (contacts.isEmpty)
-                      Container(
-                        padding: const EdgeInsets.all(35),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: const Column(
-                          children: [
-                            Icon(
-                              Icons.contact_page_outlined,
-                              size: 60,
-                              color: Color(0xFFB7B5D6),
-                            ),
-                            SizedBox(height: 12),
-                            Text(
-                              'Belum ada kontak',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
-                            ),
-                            SizedBox(height: 5),
-                            Text(
-                              'Tambahkan kontak menggunakan form di atas.',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: Colors.grey,
-                                fontSize: 13,
-                              ),
-                            ),
-                          ],
-                        ),
-                      )
-                    else
-                      ListView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: contacts.length,
-                        itemBuilder: (context, index) {
-                          final contact = contacts[index];
+                    StreamBuilder<String>(
+                      stream: _searchController.stream,
+                      initialData: '',
+                      builder: (context, snapshot) {
+                        final kataKunci =
+                            (snapshot.data ?? '').trim().toLowerCase();
 
+                        final filteredContacts = kataKunci.isEmpty
+                            ? contacts
+                            : contacts.where((contact) {
+                                final nama =
+                                    (contact['nama'] ?? '').toLowerCase();
+                                final kategori =
+                                    (contact['kategori'] ?? '').toLowerCase();
+
+                                return nama.contains(kataKunci) ||
+                                    kategori.contains(kataKunci);
+                              }).toList();
+
+                        if (contacts.isEmpty) {
                           return Container(
-                            margin: const EdgeInsets.only(bottom: 12),
-                            padding: const EdgeInsets.all(16),
+                            padding: const EdgeInsets.all(35),
                             decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(20),
-                              boxShadow: [
-                                BoxShadow(
-                                  color:
-                                      Colors.deepPurple.withOpacity(0.06),
-                                  blurRadius: 15,
-                                  offset: const Offset(0, 5),
+                            ),
+                            child: const Column(
+                              children: [
+                                Icon(
+                                  Icons.contact_page_outlined,
+                                  size: 60,
+                                  color: Color(0xFFB7B5D6),
+                                ),
+                                SizedBox(height: 12),
+                                Text(
+                                  'Belum ada kontak',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                SizedBox(height: 5),
+                                Text(
+                                  'Tambahkan kontak menggunakan form di atas.',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 13,
+                                  ),
                                 ),
                               ],
                             ),
-                            child: ListTile(
-                              contentPadding: EdgeInsets.zero,
+                          );
+                        }
 
-                              // CIRCLE AVATAR
-                              leading: CircleAvatar(
-                                radius: 26,
-                                backgroundColor:
-                                    const Color(0xFF6C4DE8),
-                                child: Text(
-                                  contact['nama']!
-                                      .substring(0, 1)
-                                      .toUpperCase(),
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                        if (filteredContacts.isEmpty) {
+                          return Container(
+                            padding: const EdgeInsets.all(30),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: const Center(
+                              child: Text(
+                                'Kontak tidak ditemukan.',
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 14,
                                 ),
-                              ),
-
-                              // DATA KONTAK
-                              title: Text(
-                                contact['nama']!,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                  color: Color(0xFF25234A),
-                                ),
-                              ),
-
-                              subtitle: Padding(
-                                padding:
-                                    const EdgeInsets.only(top: 6),
-                                child: Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.start,
-                                  children: [
-                                    // EMAIL
-                                    Row(
-                                      children: [
-                                        const Icon(
-                                          Icons.email_outlined,
-                                          size: 15,
-                                          color: Color(0xFF6C4DE8),
-                                        ),
-                                        const SizedBox(width: 6),
-                                        Expanded(
-                                          child: Text(
-                                            contact['email']!,
-                                            overflow:
-                                                TextOverflow.ellipsis,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-
-                                    const SizedBox(height: 4),
-
-                                    // NOMOR
-                                    Row(
-                                      children: [
-                                        const Icon(
-                                          Icons.phone_outlined,
-                                          size: 15,
-                                          color: Color(0xFF6C4DE8),
-                                        ),
-                                        const SizedBox(width: 6),
-                                        Text(
-                                          contact['nomor']!,
-                                        ),
-                                      ],
-                                    ),
-
-                                    const SizedBox(height: 4),
-
-                                    // KATEGORI
-                                    Row(
-                                      children: [
-                                        const Icon(
-                                          Icons.category_outlined,
-                                          size: 15,
-                                          color: Color(0xFF6C4DE8),
-                                        ),
-                                        const SizedBox(width: 6),
-                                        Text(
-                                          contact['kategori'] ??
-                                              'Tanpa kategori',
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-
-                              trailing: const Icon(
-                                Icons.more_vert_rounded,
-                                color: Color(0xFF6C4DE8),
                               ),
                             ),
                           );
-                        },
-                      ),
+                        }
+
+                        return ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: filteredContacts.length,
+                          itemBuilder: (context, index) {
+                            final contact = filteredContacts[index];
+
+                            return Container(
+                              margin: const EdgeInsets.only(bottom: 12),
+                              padding: const EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(20),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color:
+                                        Colors.deepPurple.withOpacity(0.06),
+                                    blurRadius: 15,
+                                    offset: const Offset(0, 5),
+                                  ),
+                                ],
+                              ),
+                              child: ListTile(
+                                contentPadding: EdgeInsets.zero,
+                                leading: CircleAvatar(
+                                  radius: 26,
+                                  backgroundColor:
+                                      const Color(0xFF6C4DE8),
+                                  child: Text(
+                                    contact['nama']!
+                                        .substring(0, 1)
+                                        .toUpperCase(),
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                                title: Text(
+                                  contact['nama']!,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                    color: Color(0xFF25234A),
+                                  ),
+                                ),
+                                subtitle: Padding(
+                                  padding:
+                                      const EdgeInsets.only(top: 6),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          const Icon(
+                                            Icons.email_outlined,
+                                            size: 15,
+                                            color: Color(0xFF6C4DE8),
+                                          ),
+                                          const SizedBox(width: 6),
+                                          Expanded(
+                                            child: Text(
+                                              contact['email']!,
+                                              overflow:
+                                                  TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Row(
+                                        children: [
+                                          const Icon(
+                                            Icons.phone_outlined,
+                                            size: 15,
+                                            color: Color(0xFF6C4DE8),
+                                          ),
+                                          const SizedBox(width: 6),
+                                          Text(
+                                            contact['nomor']!,
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Row(
+                                        children: [
+                                          const Icon(
+                                            Icons.category_outlined,
+                                            size: 15,
+                                            color: Color(0xFF6C4DE8),
+                                          ),
+                                          const SizedBox(width: 6),
+                                          Text(
+                                            contact['kategori'] ??
+                                                'Tanpa kategori',
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                trailing: const Icon(
+                                  Icons.more_vert_rounded,
+                                  color: Color(0xFF6C4DE8),
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      },
+                    ),
                   ],
                 ),
               ),
