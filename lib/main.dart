@@ -47,12 +47,42 @@ class _ContactPageState extends State<ContactPage> {
 
   // Fungsi untuk menyimpan kontak
   void simpanKontak() {
-    if (namaController.text.isEmpty ||
-        emailController.text.isEmpty ||
-        nomorController.text.isEmpty) {
+    final nama = namaController.text.trim();
+    final email = emailController.text.trim();
+    final nomor = nomorController.text.trim();
+    final kategori = kategoriController.text.trim();
+
+    // Validasi nama
+    if (nama.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Lengkapi semua data terlebih dahulu!'),
+          content: Text('Nama tidak boleh kosong!'),
+        ),
+      );
+      return;
+    }
+
+    // Validasi email
+    final emailValid = RegExp(
+      r'^[^@\s]+@[^@\s]+\.[^@\s]+$',
+    ).hasMatch(email);
+
+    if (email.isEmpty || !emailValid) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Masukkan email yang valid!'),
+        ),
+      );
+      return;
+    }
+
+    // Validasi nomor handphone
+    final nomorValid = RegExp(r'^[0-9]+$').hasMatch(nomor);
+
+    if (nomor.isEmpty || !nomorValid || nomor.length < 10) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Masukkan nomor handphone yang valid!'),
         ),
       );
       return;
@@ -60,12 +90,10 @@ class _ContactPageState extends State<ContactPage> {
 
     setState(() {
       contacts.add({
-        'nama': namaController.text,
-        'email': emailController.text,
-        'nomor': nomorController.text,
-        'kategori': kategoriController.text.isEmpty
-            ? null
-            : kategoriController.text,
+        'nama': nama,
+        'email': email,
+        'nomor': nomor,
+        'kategori': kategori.isEmpty ? null : kategori,
       });
 
       // Mengosongkan form setelah data disimpan
