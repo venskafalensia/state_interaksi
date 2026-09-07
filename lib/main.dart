@@ -496,23 +496,19 @@ class _ContactPageState extends State<ContactPage> {
                               contentPadding: EdgeInsets.zero,
 
                               // ICON / AVATAR
-                              leading: Container(
-                                width: 52,
-                                height: 52,
-                                decoration: BoxDecoration(
-                                  gradient: const LinearGradient(
-                                    colors: [
-                                      Color(0xFF536DFE),
-                                      Color(0xFF7C4DFF),
-                                    ],
+                              leading: CircleAvatar(
+                                radius: 26,
+                                backgroundColor:
+                                    const Color(0xFF6C4DE8),
+                                child: Text(
+                                  contact['nama']!
+                                      .substring(0, 1)
+                                      .toUpperCase(),
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
                                   ),
-                                  borderRadius:
-                                      BorderRadius.circular(16),
-                                ),
-                                child: const Icon(
-                                  Icons.person_rounded,
-                                  color: Colors.white,
-                                  size: 28,
                                 ),
                               ),
 
