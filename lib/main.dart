@@ -44,7 +44,8 @@ class _ContactPageState extends State<ContactPage> {
   final TextEditingController kategoriController = TextEditingController();
 
   // Controller untuk pencarian
-  final StreamController<String> _searchController = StreamController<String>();
+  final StreamController<String> _searchController =
+      StreamController<String>();
 
   // List untuk menyimpan data kontak
   List<Map<String, String?>> contacts = [];
@@ -60,7 +61,7 @@ class _ContactPageState extends State<ContactPage> {
   }
 
   // ============================================================
-  // FUNGSI VALIDASI DATA
+  // VALIDASI KONTAK
   // ============================================================
 
   bool validasiKontak({
@@ -69,17 +70,23 @@ class _ContactPageState extends State<ContactPage> {
     required String nomor,
   }) {
     if (nama.isEmpty) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Nama tidak boleh kosong!')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Nama tidak boleh kosong!'),
+        ),
+      );
       return false;
     }
 
-    final emailValid = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(email);
+    final emailValid = RegExp(
+      r'^[^@\s]+@[^@\s]+\.[^@\s]+$',
+    ).hasMatch(email);
 
     if (email.isEmpty || !emailValid) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Masukkan email yang valid!')),
+        const SnackBar(
+          content: Text('Masukkan email yang valid!'),
+        ),
       );
       return false;
     }
@@ -88,7 +95,9 @@ class _ContactPageState extends State<ContactPage> {
 
     if (nomor.isEmpty || !nomorValid || nomor.length < 10) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Masukkan nomor handphone yang valid!')),
+        const SnackBar(
+          content: Text('Masukkan nomor handphone yang valid!'),
+        ),
       );
       return false;
     }
@@ -97,7 +106,7 @@ class _ContactPageState extends State<ContactPage> {
   }
 
   // ============================================================
-  // FUNGSI TAMBAH KONTAK
+  // SIMPAN KONTAK
   // ============================================================
 
   void simpanKontak() {
@@ -106,7 +115,11 @@ class _ContactPageState extends State<ContactPage> {
     final nomor = nomorController.text.trim();
     final kategori = kategoriController.text.trim();
 
-    if (!validasiKontak(nama: nama, email: email, nomor: nomor)) {
+    if (!validasiKontak(
+      nama: nama,
+      email: email,
+      nomor: nomor,
+    )) {
       return;
     }
 
@@ -124,13 +137,15 @@ class _ContactPageState extends State<ContactPage> {
       kategoriController.clear();
     });
 
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(const SnackBar(content: Text('Kontak berhasil disimpan!')));
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Kontak berhasil disimpan!'),
+      ),
+    );
   }
 
   // ============================================================
-  // FUNGSI EDIT / UPDATE KONTAK
+  // EDIT / UPDATE KONTAK
   // ============================================================
 
   void editKontak(int index) {
@@ -158,18 +173,22 @@ class _ContactPageState extends State<ContactPage> {
         return AlertDialog(
           title: const Text(
             'Edit Kontak',
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
           ),
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // NAMA
+                // Nama
                 TextField(
                   controller: editNamaController,
                   decoration: InputDecoration(
                     labelText: 'Nama Lengkap',
-                    prefixIcon: const Icon(Icons.person_outline_rounded),
+                    prefixIcon: const Icon(
+                      Icons.person_outline_rounded,
+                    ),
                     filled: true,
                     fillColor: const Color(0xFFF8F8FC),
                     border: OutlineInputBorder(
@@ -181,13 +200,15 @@ class _ContactPageState extends State<ContactPage> {
 
                 const SizedBox(height: 14),
 
-                // EMAIL
+                // Email
                 TextField(
                   controller: editEmailController,
                   keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
                     labelText: 'Email',
-                    prefixIcon: const Icon(Icons.email_outlined),
+                    prefixIcon: const Icon(
+                      Icons.email_outlined,
+                    ),
                     filled: true,
                     fillColor: const Color(0xFFF8F8FC),
                     border: OutlineInputBorder(
@@ -199,13 +220,15 @@ class _ContactPageState extends State<ContactPage> {
 
                 const SizedBox(height: 14),
 
-                // NOMOR
+                // Nomor
                 TextField(
                   controller: editNomorController,
                   keyboardType: TextInputType.phone,
                   decoration: InputDecoration(
                     labelText: 'Nomor Handphone',
-                    prefixIcon: const Icon(Icons.phone_outlined),
+                    prefixIcon: const Icon(
+                      Icons.phone_outlined,
+                    ),
                     filled: true,
                     fillColor: const Color(0xFFF8F8FC),
                     border: OutlineInputBorder(
@@ -217,12 +240,14 @@ class _ContactPageState extends State<ContactPage> {
 
                 const SizedBox(height: 14),
 
-                // KATEGORI
+                // Kategori
                 TextField(
                   controller: editKategoriController,
                   decoration: InputDecoration(
                     labelText: 'Kategori',
-                    prefixIcon: const Icon(Icons.category_outlined),
+                    prefixIcon: const Icon(
+                      Icons.category_outlined,
+                    ),
                     filled: true,
                     fillColor: const Color(0xFFF8F8FC),
                     border: OutlineInputBorder(
@@ -235,7 +260,7 @@ class _ContactPageState extends State<ContactPage> {
             ),
           ),
           actions: [
-            // TOMBOL BATAL
+            // Batal
             TextButton(
               onPressed: () {
                 Navigator.pop(dialogContext);
@@ -243,15 +268,20 @@ class _ContactPageState extends State<ContactPage> {
               child: const Text('Batal'),
             ),
 
-            // TOMBOL SIMPAN PERUBAHAN
+            // Simpan perubahan
             ElevatedButton.icon(
               onPressed: () {
                 final nama = editNamaController.text.trim();
                 final email = editEmailController.text.trim();
                 final nomor = editNomorController.text.trim();
-                final kategori = editKategoriController.text.trim();
+                final kategori =
+                    editKategoriController.text.trim();
 
-                if (!validasiKontak(nama: nama, email: email, nomor: nomor)) {
+                if (!validasiKontak(
+                  nama: nama,
+                  email: email,
+                  nomor: nomor,
+                )) {
                   return;
                 }
 
@@ -260,14 +290,19 @@ class _ContactPageState extends State<ContactPage> {
                     'nama': nama,
                     'email': email,
                     'nomor': nomor,
-                    'kategori': kategori.isEmpty ? null : kategori,
+                    'kategori':
+                        kategori.isEmpty ? null : kategori,
                   };
                 });
 
                 Navigator.pop(dialogContext);
 
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Kontak berhasil diperbarui!')),
+                  const SnackBar(
+                    content: Text(
+                      'Kontak berhasil diperbarui!',
+                    ),
+                  ),
                 );
               },
               icon: const Icon(Icons.save_rounded),
@@ -285,11 +320,12 @@ class _ContactPageState extends State<ContactPage> {
   }
 
   // ============================================================
-  // FUNGSI DELETE KONTAK
+  // DELETE / HAPUS KONTAK
   // ============================================================
 
   void hapusKontak(int index) {
     final contact = contacts[index];
+    final namaKontak = contact['nama'] ?? 'kontak ini';
 
     showDialog(
       context: context,
@@ -297,13 +333,15 @@ class _ContactPageState extends State<ContactPage> {
         return AlertDialog(
           title: const Text(
             'Hapus Kontak',
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
           ),
           content: Text(
-            'Apakah kamu yakin ingin menghapus kontak "${contact['nama']}"?',
+            'Apakah kamu yakin ingin menghapus kontak "$namaKontak"?',
           ),
           actions: [
-            // TOMBOL BATAL
+            // Batal
             TextButton(
               onPressed: () {
                 Navigator.pop(dialogContext);
@@ -311,7 +349,7 @@ class _ContactPageState extends State<ContactPage> {
               child: const Text('Batal'),
             ),
 
-            // TOMBOL HAPUS
+            // Hapus
             ElevatedButton.icon(
               onPressed: () {
                 setState(() {
@@ -321,7 +359,11 @@ class _ContactPageState extends State<ContactPage> {
                 Navigator.pop(dialogContext);
 
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Kontak berhasil dihapus!')),
+                  const SnackBar(
+                    content: Text(
+                      'Kontak berhasil dihapus!',
+                    ),
+                  ),
                 );
               },
               icon: const Icon(Icons.delete_outline),
@@ -337,6 +379,10 @@ class _ContactPageState extends State<ContactPage> {
     );
   }
 
+  // ============================================================
+  // BUILD
+  // ============================================================
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -345,15 +391,19 @@ class _ContactPageState extends State<ContactPage> {
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [Color(0xFFF5F3FF), Color(0xFFF8F9FF), Color(0xFFEFF1FF)],
+            colors: [
+              Color(0xFFF5F3FF),
+              Color(0xFFF8F9FF),
+              Color(0xFFEFF1FF),
+            ],
           ),
         ),
         child: SafeArea(
           child: Column(
             children: [
-              // =================================================
+              // =========================
               // HEADER
-              // =================================================
+              // =========================
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(
@@ -362,7 +412,10 @@ class _ContactPageState extends State<ContactPage> {
                 ),
                 decoration: const BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [Color(0xFF536DFE), Color(0xFF7C4DFF)],
+                    colors: [
+                      Color(0xFF536DFE),
+                      Color(0xFF7C4DFF),
+                    ],
                   ),
                   borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(28),
@@ -389,7 +442,8 @@ class _ContactPageState extends State<ContactPage> {
 
                     const Expanded(
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        crossAxisAlignment:
+                            CrossAxisAlignment.start,
                         children: [
                           Text(
                             'Buku Kontak',
@@ -426,16 +480,16 @@ class _ContactPageState extends State<ContactPage> {
                 ),
               ),
 
-              // =================================================
+              // =========================
               // ISI
-              // =================================================
+              // =========================
               Expanded(
                 child: ListView(
                   padding: const EdgeInsets.all(20),
                   children: [
-                    // =================================================
+                    // =========================
                     // FORM TAMBAH KONTAK
-                    // =================================================
+                    // =========================
                     Container(
                       padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
@@ -443,22 +497,26 @@ class _ContactPageState extends State<ContactPage> {
                         borderRadius: BorderRadius.circular(24),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.deepPurple.withOpacity(0.08),
+                            color:
+                                Colors.deepPurple.withOpacity(0.08),
                             blurRadius: 20,
                             offset: const Offset(0, 8),
                           ),
                         ],
                       ),
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        crossAxisAlignment:
+                            CrossAxisAlignment.start,
                         children: [
                           Row(
                             children: [
                               Container(
-                                padding: const EdgeInsets.all(10),
+                                padding:
+                                    const EdgeInsets.all(10),
                                 decoration: BoxDecoration(
                                   color: const Color(0xFFEDE9FE),
-                                  borderRadius: BorderRadius.circular(12),
+                                  borderRadius:
+                                      BorderRadius.circular(12),
                                 ),
                                 child: const Icon(
                                   Icons.person_add_rounded,
@@ -469,14 +527,17 @@ class _ContactPageState extends State<ContactPage> {
                               const SizedBox(width: 12),
 
                               const Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                                crossAxisAlignment:
+                                    CrossAxisAlignment.start,
                                 children: [
                                   Text(
                                     'Tambah Kontak Baru',
                                     style: TextStyle(
                                       fontSize: 20,
-                                      fontWeight: FontWeight.bold,
-                                      color: Color(0xFF25234A),
+                                      fontWeight:
+                                          FontWeight.bold,
+                                      color:
+                                          Color(0xFF25234A),
                                     ),
                                   ),
                                   SizedBox(height: 3),
@@ -508,14 +569,17 @@ class _ContactPageState extends State<ContactPage> {
                           TextField(
                             controller: namaController,
                             decoration: InputDecoration(
-                              hintText: 'Masukkan nama lengkap',
+                              hintText:
+                                  'Masukkan nama lengkap',
                               prefixIcon: const Icon(
                                 Icons.person_outline_rounded,
                               ),
                               filled: true,
-                              fillColor: const Color(0xFFF8F8FC),
+                              fillColor:
+                                  const Color(0xFFF8F8FC),
                               border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(14),
+                                borderRadius:
+                                    BorderRadius.circular(14),
                                 borderSide: BorderSide.none,
                               ),
                             ),
@@ -536,14 +600,19 @@ class _ContactPageState extends State<ContactPage> {
 
                           TextField(
                             controller: emailController,
-                            keyboardType: TextInputType.emailAddress,
+                            keyboardType:
+                                TextInputType.emailAddress,
                             decoration: InputDecoration(
                               hintText: 'Masukkan email',
-                              prefixIcon: const Icon(Icons.email_outlined),
+                              prefixIcon: const Icon(
+                                Icons.email_outlined,
+                              ),
                               filled: true,
-                              fillColor: const Color(0xFFF8F8FC),
+                              fillColor:
+                                  const Color(0xFFF8F8FC),
                               border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(14),
+                                borderRadius:
+                                    BorderRadius.circular(14),
                                 borderSide: BorderSide.none,
                               ),
                             ),
@@ -564,14 +633,20 @@ class _ContactPageState extends State<ContactPage> {
 
                           TextField(
                             controller: nomorController,
-                            keyboardType: TextInputType.phone,
+                            keyboardType:
+                                TextInputType.phone,
                             decoration: InputDecoration(
-                              hintText: 'Masukkan nomor handphone',
-                              prefixIcon: const Icon(Icons.phone_outlined),
+                              hintText:
+                                  'Masukkan nomor handphone',
+                              prefixIcon: const Icon(
+                                Icons.phone_outlined,
+                              ),
                               filled: true,
-                              fillColor: const Color(0xFFF8F8FC),
+                              fillColor:
+                                  const Color(0xFFF8F8FC),
                               border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(14),
+                                borderRadius:
+                                    BorderRadius.circular(14),
                                 borderSide: BorderSide.none,
                               ),
                             ),
@@ -593,12 +668,17 @@ class _ContactPageState extends State<ContactPage> {
                           TextField(
                             controller: kategoriController,
                             decoration: InputDecoration(
-                              hintText: 'Contoh: Keluarga, Teman, Kerja',
-                              prefixIcon: const Icon(Icons.category_outlined),
+                              hintText:
+                                  'Contoh: Keluarga, Teman, Kerja',
+                              prefixIcon: const Icon(
+                                Icons.category_outlined,
+                              ),
                               filled: true,
-                              fillColor: const Color(0xFFF8F8FC),
+                              fillColor:
+                                  const Color(0xFFF8F8FC),
                               border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(14),
+                                borderRadius:
+                                    BorderRadius.circular(14),
                                 borderSide: BorderSide.none,
                               ),
                             ),
@@ -612,13 +692,15 @@ class _ContactPageState extends State<ContactPage> {
                             height: 52,
                             child: DecoratedBox(
                               decoration: BoxDecoration(
-                                gradient: const LinearGradient(
+                                gradient:
+                                    const LinearGradient(
                                   colors: [
                                     Color(0xFF536DFE),
                                     Color(0xFF7C4DFF),
                                   ],
                                 ),
-                                borderRadius: BorderRadius.circular(14),
+                                borderRadius:
+                                    BorderRadius.circular(14),
                               ),
                               child: ElevatedButton.icon(
                                 onPressed: simpanKontak,
@@ -630,15 +712,22 @@ class _ContactPageState extends State<ContactPage> {
                                   'Simpan Kontak',
                                   style: TextStyle(
                                     fontSize: 16,
-                                    fontWeight: FontWeight.bold,
+                                    fontWeight:
+                                        FontWeight.bold,
                                     color: Colors.white,
                                   ),
                                 ),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.transparent,
-                                  shadowColor: Colors.transparent,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(14),
+                                style:
+                                    ElevatedButton.styleFrom(
+                                  backgroundColor:
+                                      Colors.transparent,
+                                  shadowColor:
+                                      Colors.transparent,
+                                  shape:
+                                      RoundedRectangleBorder(
+                                    borderRadius:
+                                        BorderRadius.circular(
+                                            14),
                                   ),
                                 ),
                               ),
@@ -650,14 +739,15 @@ class _ContactPageState extends State<ContactPage> {
 
                     const SizedBox(height: 25),
 
-                    // =================================================
+                    // =========================
                     // JUDUL DAFTAR KONTAK
-                    // =================================================
+                    // =========================
                     Row(
                       children: [
                         const Expanded(
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            crossAxisAlignment:
+                                CrossAxisAlignment.start,
                             children: [
                               Text(
                                 'Daftar Kontak',
@@ -681,15 +771,21 @@ class _ContactPageState extends State<ContactPage> {
 
                         // JUMLAH KONTAK
                         Container(
-                          padding: const EdgeInsets.symmetric(
+                          padding:
+                              const EdgeInsets.symmetric(
                             horizontal: 14,
                             vertical: 8,
                           ),
                           decoration: BoxDecoration(
-                            gradient: const LinearGradient(
-                              colors: [Color(0xFF536DFE), Color(0xFF7C4DFF)],
+                            gradient:
+                                const LinearGradient(
+                              colors: [
+                                Color(0xFF536DFE),
+                                Color(0xFF7C4DFF),
+                              ],
                             ),
-                            borderRadius: BorderRadius.circular(20),
+                            borderRadius:
+                                BorderRadius.circular(20),
                           ),
                           child: Text(
                             '${contacts.length} Kontak',
@@ -704,15 +800,16 @@ class _ContactPageState extends State<ContactPage> {
 
                     const SizedBox(height: 14),
 
-                    // =================================================
+                    // =========================
                     // PENCARIAN KONTAK
-                    // =================================================
+                    // =========================
                     TextField(
                       onChanged: (teks) {
                         _searchController.add(teks);
                       },
                       decoration: InputDecoration(
-                        hintText: 'Cari nama atau kategori...',
+                        hintText:
+                            'Cari nama atau kategori...',
                         prefixIcon: const Icon(
                           Icons.search_rounded,
                           color: Color(0xFF6C4DE8),
@@ -720,7 +817,8 @@ class _ContactPageState extends State<ContactPage> {
                         filled: true,
                         fillColor: Colors.white,
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(14),
+                          borderRadius:
+                              BorderRadius.circular(14),
                           borderSide: BorderSide.none,
                         ),
                       ),
@@ -728,57 +826,70 @@ class _ContactPageState extends State<ContactPage> {
 
                     const SizedBox(height: 14),
 
-                    // =================================================
+                    // =========================
                     // LIST KONTAK
-                    // =================================================
+                    // =========================
                     StreamBuilder<String>(
                       stream: _searchController.stream,
                       initialData: '',
                       builder: (context, snapshot) {
-                        final kataKunci = (snapshot.data ?? '')
-                            .trim()
-                            .toLowerCase();
+                        final kataKunci =
+                            (snapshot.data ?? '')
+                                .trim()
+                                .toLowerCase();
 
-                        final filteredContacts = kataKunci.isEmpty
-                            ? contacts
-                            : contacts.where((contact) {
-                                final nama = (contact['nama'] ?? '')
-                                    .toLowerCase();
+                        final filteredContacts =
+                            kataKunci.isEmpty
+                                ? contacts
+                                : contacts.where((contact) {
+                                    final nama =
+                                        (contact['nama'] ?? '')
+                                            .toLowerCase();
 
-                                final kategori = (contact['kategori'] ?? '')
-                                    .toLowerCase();
+                                    final kategori =
+                                        (contact['kategori'] ??
+                                                '')
+                                            .toLowerCase();
 
-                                return nama.contains(kataKunci) ||
-                                    kategori.contains(kataKunci);
-                              }).toList();
+                                    return nama.contains(
+                                            kataKunci) ||
+                                        kategori.contains(
+                                            kataKunci);
+                                  }).toList();
 
                         // BELUM ADA KONTAK
                         if (contacts.isEmpty) {
                           return Container(
-                            padding: const EdgeInsets.all(35),
+                            padding:
+                                const EdgeInsets.all(35),
                             decoration: BoxDecoration(
                               color: Colors.white,
-                              borderRadius: BorderRadius.circular(20),
+                              borderRadius:
+                                  BorderRadius.circular(20),
                             ),
                             child: const Column(
                               children: [
                                 Icon(
-                                  Icons.contact_page_outlined,
+                                  Icons
+                                      .contact_page_outlined,
                                   size: 60,
-                                  color: Color(0xFFB7B5D6),
+                                  color:
+                                      Color(0xFFB7B5D6),
                                 ),
                                 SizedBox(height: 12),
                                 Text(
                                   'Belum ada kontak',
                                   style: TextStyle(
-                                    fontWeight: FontWeight.bold,
+                                    fontWeight:
+                                        FontWeight.bold,
                                     fontSize: 16,
                                   ),
                                 ),
                                 SizedBox(height: 5),
                                 Text(
                                   'Tambahkan kontak menggunakan form di atas.',
-                                  textAlign: TextAlign.center,
+                                  textAlign:
+                                      TextAlign.center,
                                   style: TextStyle(
                                     color: Colors.grey,
                                     fontSize: 13,
@@ -792,10 +903,12 @@ class _ContactPageState extends State<ContactPage> {
                         // KONTAK TIDAK DITEMUKAN
                         if (filteredContacts.isEmpty) {
                           return Container(
-                            padding: const EdgeInsets.all(30),
+                            padding:
+                                const EdgeInsets.all(30),
                             decoration: BoxDecoration(
                               color: Colors.white,
-                              borderRadius: BorderRadius.circular(20),
+                              borderRadius:
+                                  BorderRadius.circular(20),
                             ),
                             child: const Center(
                               child: Text(
@@ -812,44 +925,59 @@ class _ContactPageState extends State<ContactPage> {
                         // LIST KONTAK
                         return ListView.builder(
                           shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
+                          physics:
+                              const NeverScrollableScrollPhysics(),
                           itemCount: filteredContacts.length,
                           itemBuilder: (context, index) {
-                            final contact = filteredContacts[index];
+                            final contact =
+                                filteredContacts[index];
 
-                            // Cari index asli dari contacts.
-                            // Ini penting ketika sedang menggunakan pencarian.
-                            final originalIndex = contacts.indexOf(contact);
+                            // Cari index asli.
+                            // Ini membuat Edit/Delete tetap
+                            // mengenai kontak yang benar
+                            // meskipun sedang melakukan pencarian.
+                            final originalIndex =
+                                contacts.indexOf(contact);
 
                             return Container(
-                              margin: const EdgeInsets.only(bottom: 12),
-                              padding: const EdgeInsets.all(16),
+                              margin:
+                                  const EdgeInsets.only(
+                                      bottom: 12),
+                              padding:
+                                  const EdgeInsets.all(16),
                               decoration: BoxDecoration(
                                 color: Colors.white,
-                                borderRadius: BorderRadius.circular(20),
+                                borderRadius:
+                                    BorderRadius.circular(20),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: Colors.deepPurple.withOpacity(0.06),
+                                    color: Colors.deepPurple
+                                        .withOpacity(0.06),
                                     blurRadius: 15,
-                                    offset: const Offset(0, 5),
+                                    offset:
+                                        const Offset(0, 5),
                                   ),
                                 ],
                               ),
                               child: ListTile(
-                                contentPadding: EdgeInsets.zero,
+                                contentPadding:
+                                    EdgeInsets.zero,
 
-                                // ICON / HURUF KONTAK
+                                // ICON KONTAK
                                 leading: CircleAvatar(
                                   radius: 26,
-                                  backgroundColor: const Color(0xFF6C4DE8),
+                                  backgroundColor:
+                                      const Color(0xFF6C4DE8),
                                   child: Text(
                                     contact['nama']!
                                         .substring(0, 1)
                                         .toUpperCase(),
-                                    style: const TextStyle(
+                                    style:
+                                        const TextStyle(
                                       color: Colors.white,
                                       fontSize: 20,
-                                      fontWeight: FontWeight.bold,
+                                      fontWeight:
+                                          FontWeight.bold,
                                     ),
                                   ),
                                 ),
@@ -857,33 +985,45 @@ class _ContactPageState extends State<ContactPage> {
                                 // NAMA
                                 title: Text(
                                   contact['nama']!,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
+                                  style:
+                                      const TextStyle(
+                                    fontWeight:
+                                        FontWeight.bold,
                                     fontSize: 16,
-                                    color: Color(0xFF25234A),
+                                    color:
+                                        Color(0xFF25234A),
                                   ),
                                 ),
 
-                                // DETAIL KONTAK
+                                // DETAIL
                                 subtitle: Padding(
-                                  padding: const EdgeInsets.only(top: 6),
+                                  padding:
+                                      const EdgeInsets.only(
+                                          top: 6),
                                   child: Column(
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                        CrossAxisAlignment
+                                            .start,
                                     children: [
                                       // EMAIL
                                       Row(
                                         children: [
                                           const Icon(
-                                            Icons.email_outlined,
+                                            Icons
+                                                .email_outlined,
                                             size: 15,
-                                            color: Color(0xFF6C4DE8),
+                                            color: Color(
+                                                0xFF6C4DE8),
                                           ),
-                                          const SizedBox(width: 6),
+                                          const SizedBox(
+                                              width: 6),
                                           Expanded(
                                             child: Text(
-                                              contact['email']!,
-                                              overflow: TextOverflow.ellipsis,
+                                              contact[
+                                                  'email']!,
+                                              overflow:
+                                                  TextOverflow
+                                                      .ellipsis,
                                             ),
                                           ),
                                         ],
@@ -895,12 +1035,17 @@ class _ContactPageState extends State<ContactPage> {
                                       Row(
                                         children: [
                                           const Icon(
-                                            Icons.phone_outlined,
+                                            Icons
+                                                .phone_outlined,
                                             size: 15,
-                                            color: Color(0xFF6C4DE8),
+                                            color: Color(
+                                                0xFF6C4DE8),
                                           ),
-                                          const SizedBox(width: 6),
-                                          Text(contact['nomor']!),
+                                          const SizedBox(
+                                              width: 6),
+                                          Text(
+                                            contact['nomor']!,
+                                          ),
                                         ],
                                       ),
 
@@ -910,13 +1055,17 @@ class _ContactPageState extends State<ContactPage> {
                                       Row(
                                         children: [
                                           const Icon(
-                                            Icons.category_outlined,
+                                            Icons
+                                                .category_outlined,
                                             size: 15,
-                                            color: Color(0xFF6C4DE8),
+                                            color: Color(
+                                                0xFF6C4DE8),
                                           ),
-                                          const SizedBox(width: 6),
+                                          const SizedBox(
+                                              width: 6),
                                           Text(
-                                            contact['kategori'] ??
+                                            contact[
+                                                    'kategori'] ??
                                                 'Tanpa kategori',
                                           ),
                                         ],
@@ -925,21 +1074,25 @@ class _ContactPageState extends State<ContactPage> {
                                   ),
                                 ),
 
-                                // =================================================
+                                // =========================
                                 // TOMBOL EDIT & DELETE
-                                // =================================================
+                                // =========================
                                 trailing: Row(
-                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisSize:
+                                      MainAxisSize.min,
                                   children: [
                                     // EDIT
                                     IconButton(
                                       tooltip: 'Edit',
                                       onPressed: () {
-                                        editKontak(originalIndex);
+                                        editKontak(
+                                            originalIndex);
                                       },
                                       icon: const Icon(
-                                        Icons.edit_outlined,
-                                        color: Color(0xFF536DFE),
+                                        Icons
+                                            .edit_outlined,
+                                        color: Color(
+                                            0xFF536DFE),
                                       ),
                                     ),
 
@@ -947,10 +1100,12 @@ class _ContactPageState extends State<ContactPage> {
                                     IconButton(
                                       tooltip: 'Hapus',
                                       onPressed: () {
-                                        hapusKontak(originalIndex);
+                                        hapusKontak(
+                                            originalIndex);
                                       },
                                       icon: const Icon(
-                                        Icons.delete_outline,
+                                        Icons
+                                            .delete_outline,
                                         color: Colors.red,
                                       ),
                                     ),
